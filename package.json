@@ -22,6 +22,7 @@
         , "ee-log"                  : "0.3.x"
         , "async-method"            : "0.1.x"
         , "cachd"                   : "0.2.x"
+        , "es6-promise"             : "2.x.x"
     }
     , "devDependencies": {
           "mocha"                   : "1.17.x"
