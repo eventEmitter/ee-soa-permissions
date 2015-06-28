@@ -4,3 +4,10 @@ node_js :
     - "0.10"
     - "0.12"
     - "iojs"
+
+addons:
+    postgresql: "9.4"
+
+before_script:
+  - psql -f test/createdb.sql -U postgres
+  - psql -f test/postgres.sql -U postgres

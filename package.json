@@ -25,6 +25,8 @@
     }
     , "devDependencies": {
           "mocha"                   : "1.17.x"
+        , "related"                 : "*"
+        , "test-config"             : "*"
     }
     , "optionalDependencies": {}
     , "keywords"                    : []
