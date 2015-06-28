@@ -21,7 +21,7 @@
         , "ee-types"                : "0.1.x"
         , "ee-log"                  : "0.3.x"
         , "async-method"            : "0.1.x"
-        , "cachd"                   : "0.1.x"
+        , "cachd"                   : "0.2.x"
     }
     , "devDependencies": {
           "mocha"                   : "1.17.x"

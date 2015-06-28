@@ -333,6 +333,13 @@
     --- ACCESSTOKEN ---
     -------------------
 
+    --- ALTER TABLE "eventbooster"."accessToken" ADD column id_user int;
+    ALTER TABLE "eventbooster"."accessToken" ADD column id_service int;
+    --- ALTER TABLE "eventbooster"."accessToken" ADD CONSTRAINT fk_accessToken_user_id FOREIGN KEY ("id_user") REFERENCES "eventbooster"."user" ("id") MATCH SIMPLE;
+    ALTER TABLE "eventbooster"."accessToken" ADD CONSTRAINT fk_accessToken_service_id FOREIGN KEY ("id_service") REFERENCES "eventbooster"."service" ("id") MATCH SIMPLE;
+    ALTER TABLE "eventbooster"."accessToken" ADD CONSTRAINT check_user_or_service CHECK ((id_service is NULL and id_user is NOT NULL) or (id_service is NOT NULL and id_user is NULL));
+
+
     CREATE TABLE "eventbooster"."user_accessToken" (
           "id_user"             int NOT NULL
         , "id_accessToken"      int NOT NULL
