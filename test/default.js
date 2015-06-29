@@ -180,7 +180,7 @@
 
 
 
-    describe('the SOA permissions module', function(){
+    describe('[The SOA permissions module]', function(){
         it('should not crash when instantiated', function() {
             permissions = new SOAPermissions({
                 db: db
@@ -200,6 +200,16 @@
             permissions.getPermission(token).then(function(permission) {
                 assert(permission.isActionAllowed('user', 'read'));
                 assert(permission.isActionAllowed('user', 'delete') === false);
+                done();
+            }).catch(done);
+        });
+
+
+        it('should return the cached permission in less than 3 ms', function(done) {
+            var start = Date.now();
+
+            permissions.getPermission(token).then(function(permission) {
+                assert((Date.now()-start) < 3);
                 done();
             }).catch(done);
         });
