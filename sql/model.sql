@@ -9,7 +9,7 @@
     CREATE TABLE "eventbooster"."rowRestrictionOperator" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "decription"          text
+        , "description"          text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
@@ -23,7 +23,7 @@
     CREATE TABLE "eventbooster"."rowRestrictionValueType" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "decription"          text
+        , "description"          text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
@@ -37,7 +37,7 @@
     CREATE TABLE "eventbooster"."rowRestrictionEntity" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "decription"          text
+        , "description"          text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
@@ -94,7 +94,7 @@
     CREATE TABLE "eventbooster"."permissionObjectType" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "decription"          text
+        , "description"          text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
@@ -109,7 +109,7 @@
           "id"                      serial NOT NULL
         , "id_permissionObjectType" int NOT NULL
         , "identifier"              varchar(80) NOT NULL
-        , "decription"              text
+        , "description"              text
         , "created"                 timestamp without time zone NOT NULL
         , "updated"                 timestamp without time zone
         , "deleted"                 timestamp without time zone
@@ -126,7 +126,7 @@
      CREATE TABLE "eventbooster"."permissionAction" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "decription"          text
+        , "description"          text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
@@ -149,7 +149,7 @@
         , CONSTRAINT "unique_permission_object_action" 
             UNIQUE ("id_permissionObject", "id_permissionAction")
         , CONSTRAINT "fk_permission_permissionObject_id" FOREIGN KEY ("id_permissionObject")
-            REFERENCES "eventbooster"."permissionObjectType" ("id") MATCH SIMPLE
+            REFERENCES "eventbooster"."permissionObject" ("id") MATCH SIMPLE
             ON UPDATE CASCADE ON DELETE RESTRICT
         , CONSTRAINT "fk_permission_permissionAction_id" FOREIGN KEY ("id_permissionAction")
             REFERENCES "eventbooster"."permissionAction" ("id") MATCH SIMPLE
@@ -166,7 +166,7 @@
     CREATE TABLE "eventbooster"."capability" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "decription"          text
+        , "description"          text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
@@ -340,29 +340,17 @@
     ALTER TABLE "eventbooster"."accessToken" ADD CONSTRAINT check_user_or_service CHECK ((id_service is NULL and id_user is NOT NULL) or (id_service is NOT NULL and id_user is NULL));
 
 
-    CREATE TABLE "eventbooster"."user_accessToken" (
-          "id_user"             int NOT NULL
-        , "id_accessToken"      int NOT NULL
-        , CONSTRAINT "pk_user_accessToken_id"
-            PRIMARY KEY ("id_user", "id_accessToken")
-        , CONSTRAINT "fk_user_accessToken_user_id" FOREIGN KEY ("id_user")
-            REFERENCES "eventbooster"."user" ("id") MATCH SIMPLE
-            ON UPDATE CASCADE ON DELETE CASCADE
-        , CONSTRAINT "fk_user_accessToken_accessToken_id" FOREIGN KEY ("id_accessToken")
-            REFERENCES "eventbooster"."accessToken" ("id") MATCH SIMPLE
-            ON UPDATE CASCADE ON DELETE CASCADE
-    );
+    ALTER TABLE "eventbooster"."accessToken" ALTER "id_user" DROP NOT NULL; 
 
 
-    CREATE TABLE "eventbooster"."service_accessToken" (
-          "id_service"          int NOT NULL
-        , "id_accessToken"      int NOT NULL
-        , CONSTRAINT "pk_service_accessToken_id"
-            PRIMARY KEY ("id_service", "id_accessToken")
-        , CONSTRAINT "fk_service_accessToken_service_id" FOREIGN KEY ("id_service")
-            REFERENCES "eventbooster"."service" ("id") MATCH SIMPLE
-            ON UPDATE CASCADE ON DELETE CASCADE
-        , CONSTRAINT "fk_service_accessToken_accessToken_id" FOREIGN KEY ("id_accessToken")
-            REFERENCES "eventbooster"."accessToken" ("id") MATCH SIMPLE
-            ON UPDATE CASCADE ON DELETE CASCADE
-    );
+
+
+
+    INSERT INTO "eventbooster"."permissionObjectType" ("identifier", "description", "created") VALUES ('controller', 'permissions applying to controllers', now());
+
+
+
+    INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('read', 'The read action that can be execute on permission objects', now());
+    INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('create', 'The create action that can be execute on permission objects', now());
+    INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('update', 'The update action that can be execute on permission objects', now());
+    INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('delete', 'The delete action that can be execute on permission objects', now());

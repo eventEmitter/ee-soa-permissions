@@ -8,7 +8,6 @@
 
     CREATE TABLE "ee_soa_permissions"."tenant" (
         id serial NOT NULL,
-        id_country integer NOT NULL,
         name character varying(45) NOT NULL,
         CONSTRAINT pk_tenant_id PRIMARY KEY (id),
         CONSTRAINT unique_tenant_name UNIQUE (name)
@@ -27,10 +26,38 @@
     );
 
 
+
+    CREATE TABLE "ee_soa_permissions"."userProfile" (
+        id_user integer NOT NULL,
+        "firstName" character varying(255),
+        "lastName" character varying(255),
+        address character varying(255),
+        zip character varying(100),
+        city character varying(100),
+        birthdate date,
+        phone character varying(100),
+        CONSTRAINT "pk_userProfile_id" PRIMARY KEY (id_user),
+        CONSTRAINT "fk_userProfile_user_id" FOREIGN KEY (id_user)
+          REFERENCES "ee_soa_permissions"."user" (id) MATCH SIMPLE
+          ON UPDATE CASCADE ON DELETE CASCADE
+    );
+
+
+    CREATE TABLE "ee_soa_permissions"."userLoginEmail" (
+        id_user integer NOT NULL,
+        email character varying(255) NOT NULL,
+        nonce character varying(128) NOT NULL,
+        password character varying(128) NOT NULL,
+        CONSTRAINT "pk_userLoginEmail_id" PRIMARY KEY (id_user),
+        CONSTRAINT "fk_userLoginEmail_user_id" FOREIGN KEY (id_user)
+          REFERENCES "ee_soa_permissions"."user" (id) MATCH SIMPLE
+          ON UPDATE CASCADE ON DELETE CASCADE
+    );
+
     
     CREATE TABLE "ee_soa_permissions"."accessToken" (
         id serial NOT NULL,
-        id_user integer NOT NULL,
+        id_user integer,
         token character varying(64) NOT NULL,
         expires timestamp without time zone,
         CONSTRAINT "pk_accessToken_id" PRIMARY KEY (id),
@@ -46,7 +73,7 @@
     CREATE TABLE "ee_soa_permissions"."rowRestrictionOperator" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "decription"          text
+        , "description"          text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
@@ -60,7 +87,7 @@
     CREATE TABLE "ee_soa_permissions"."rowRestrictionValueType" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "decription"          text
+        , "description"          text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
@@ -74,7 +101,7 @@
     CREATE TABLE "ee_soa_permissions"."rowRestrictionEntity" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "decription"          text
+        , "description"          text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
@@ -127,7 +154,7 @@
     CREATE TABLE "ee_soa_permissions"."permissionObjectType" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "decription"          text
+        , "description"          text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
@@ -142,7 +169,7 @@
           "id"                      serial NOT NULL
         , "id_permissionObjectType" int NOT NULL
         , "identifier"              varchar(80) NOT NULL
-        , "decription"              text
+        , "description"              text
         , "created"                 timestamp without time zone NOT NULL
         , "updated"                 timestamp without time zone
         , "deleted"                 timestamp without time zone
@@ -159,7 +186,7 @@
      CREATE TABLE "ee_soa_permissions"."permissionAction" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "decription"          text
+        , "description"          text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
@@ -182,7 +209,7 @@
         , CONSTRAINT "unique_permission_object_action" 
             UNIQUE ("id_permissionObject", "id_permissionAction")
         , CONSTRAINT "fk_permission_permissionObject_id" FOREIGN KEY ("id_permissionObject")
-            REFERENCES "ee_soa_permissions"."permissionObjectType" ("id") MATCH SIMPLE
+            REFERENCES "ee_soa_permissions"."permissionObject" ("id") MATCH SIMPLE
             ON UPDATE CASCADE ON DELETE RESTRICT
         , CONSTRAINT "fk_permission_permissionAction_id" FOREIGN KEY ("id_permissionAction")
             REFERENCES "ee_soa_permissions"."permissionAction" ("id") MATCH SIMPLE
@@ -195,7 +222,7 @@
     CREATE TABLE "ee_soa_permissions"."capability" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "decription"          text
+        , "description"          text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
@@ -346,29 +373,12 @@
     ALTER TABLE "ee_soa_permissions"."accessToken" ADD CONSTRAINT check_user_or_service CHECK ((id_service is NULL and id_user is NOT NULL) or (id_service is NOT NULL and id_user is NULL));
 
 
-    CREATE TABLE "ee_soa_permissions"."user_accessToken" (
-          "id_user"             int NOT NULL
-        , "id_accessToken"      int NOT NULL
-        , CONSTRAINT "pk_user_accessToken_id"
-            PRIMARY KEY ("id_user", "id_accessToken")
-        , CONSTRAINT "fk_user_accessToken_user_id" FOREIGN KEY ("id_user")
-            REFERENCES "ee_soa_permissions"."user" ("id") MATCH SIMPLE
-            ON UPDATE CASCADE ON DELETE CASCADE
-        , CONSTRAINT "fk_user_accessToken_accessToken_id" FOREIGN KEY ("id_accessToken")
-            REFERENCES "ee_soa_permissions"."accessToken" ("id") MATCH SIMPLE
-            ON UPDATE CASCADE ON DELETE CASCADE
-    );
 
 
-    CREATE TABLE "ee_soa_permissions"."service_accessToken" (
-          "id_service"          int NOT NULL
-        , "id_accessToken"      int NOT NULL
-        , CONSTRAINT "pk_service_accessToken_id"
-            PRIMARY KEY ("id_service", "id_accessToken")
-        , CONSTRAINT "fk_service_accessToken_service_id" FOREIGN KEY ("id_service")
-            REFERENCES "ee_soa_permissions"."service" ("id") MATCH SIMPLE
-            ON UPDATE CASCADE ON DELETE CASCADE
-        , CONSTRAINT "fk_service_accessToken_accessToken_id" FOREIGN KEY ("id_accessToken")
-            REFERENCES "ee_soa_permissions"."accessToken" ("id") MATCH SIMPLE
-            ON UPDATE CASCADE ON DELETE CASCADE
-    );
+
+    INSERT INTO "ee_soa_permissions"."permissionObjectType" ("identifier", "description", "created") VALUES ('controller', 'permissions applying to controllers', now());
+
+    INSERT INTO "ee_soa_permissions"."permissionAction" ("identifier", "description", "created") VALUES ('read', 'The read action that can be execute on permission objects', now());
+    INSERT INTO "ee_soa_permissions"."permissionAction" ("identifier", "description", "created") VALUES ('create', 'The create action that can be execute on permission objects', now());
+    INSERT INTO "ee_soa_permissions"."permissionAction" ("identifier", "description", "created") VALUES ('update', 'The update action that can be execute on permission objects', now());
+    INSERT INTO "ee_soa_permissions"."permissionAction" ("identifier", "description", "created") VALUES ('delete', 'The delete action that can be execute on permission objects', now());
