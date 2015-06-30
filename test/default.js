@@ -1,4 +1,4 @@
-    
+
 
     var   Class             = require('ee-class')
         , log               = require('ee-log')
@@ -10,41 +10,6 @@
         , Timestamps        = require('related-timestamps')
         , SOAPermissions    = require('../');
 
-
-
-    var datify = function(input) {
-        if (type.array(input)) {
-            input.forEach(datify);
-        }
-        else if (type.object(input)) {
-            Object.keys(input).forEach(function(key) {
-                if (/date/i.test(key) && type.string(input[key])) {
-                    input[key] = new Date(input[key]);
-                }
-            })
-        }
-
-        return input;
-    }
-
-
-
-    var expect = function(val, cb){
-        if (type.string(val)) val = datify(JSON.parse(val));
-
-        return function(err, result) { //log(JSON.stringify(result));
-            try {
-                if (result && result.toJSON) result = result.toJSON();
-                assert.deepEqual(result, val);
-            } catch (err) {
-                log.warn('comparison failed: ');
-                log(JSON.stringify(val), JSON.stringify(result));
-                log(val, result);
-                return cb(err);
-            }
-            cb();
-        }
-    };
 
 
 
@@ -72,7 +37,7 @@
         }]
     }]}).db.filter(function(config) {return config.schema === databaseName});
 
-    
+
 
 
     // sql for test db
@@ -208,8 +173,32 @@
         it('should return the cached permission in less than 3 ms', function(done) {
             var start = Date.now();
 
-            permissions.getPermission(token).then(function(permission) { log(permission);
+            permissions.getPermission(token).then(function(permission) {
                 assert((Date.now()-start) < 3);
+                done();
+            }).catch(done);
+        });
+
+
+        it('should return if there is a user on the permission set', function(done) {
+            permissions.getPermission(token).then(function(permission) {
+                assert(permission.hasUser());
+                done();
+            }).catch(done);
+        });
+
+
+        it('should return if there is a service on the permission set', function(done) {
+            permissions.getPermission(token).then(function(permission) {
+                assert(!permission.hasService());
+                done();
+            }).catch(done);
+        });
+
+
+        it('should return the user if requested', function(done) {
+            permissions.getPermission(token).then(function(permission) {
+                assert(!!permission.getFirstUser());
                 done();
             }).catch(done);
         });
