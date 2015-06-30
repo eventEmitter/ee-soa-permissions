@@ -3,7 +3,7 @@
     DROP SCHEMA IF EXISTS ee_soa_permissions CASCADE;
     CREATE SCHEMA ee_soa_permissions;
 
-    
+
 
 
     CREATE TABLE "ee_soa_permissions"."tenant" (
@@ -54,7 +54,7 @@
           ON UPDATE CASCADE ON DELETE CASCADE
     );
 
-    
+
     CREATE TABLE "ee_soa_permissions"."accessToken" (
         id serial NOT NULL,
         id_user integer,
@@ -69,7 +69,7 @@
 
 
 
-    
+
     CREATE TABLE "ee_soa_permissions"."rowRestrictionOperator" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
@@ -79,11 +79,11 @@
         , "deleted"             timestamp without time zone
         , CONSTRAINT "pk_rowRestrictionOperator_id"
             PRIMARY KEY ("id")
-        , CONSTRAINT "unique_rowRestrictionOperator_identifier" 
+        , CONSTRAINT "unique_rowRestrictionOperator_identifier"
             UNIQUE ("identifier")
     );
 
-    
+
     CREATE TABLE "ee_soa_permissions"."rowRestrictionValueType" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
@@ -93,11 +93,11 @@
         , "deleted"             timestamp without time zone
         , CONSTRAINT "pk_rowRestrictionValueType_id"
             PRIMARY KEY ("id")
-        , CONSTRAINT "unique_rowRestrictionValueType_identifier" 
+        , CONSTRAINT "unique_rowRestrictionValueType_identifier"
             UNIQUE ("identifier")
     );
 
-    
+
     CREATE TABLE "ee_soa_permissions"."rowRestrictionEntity" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
@@ -107,11 +107,11 @@
         , "deleted"             timestamp without time zone
         , CONSTRAINT "pk_rowRestrictionEntity_id"
             PRIMARY KEY ("id")
-        , CONSTRAINT "unique_rowRestrictionEntity_identifier" 
+        , CONSTRAINT "unique_rowRestrictionEntity_identifier"
             UNIQUE ("identifier")
     );
 
-    
+
     CREATE TABLE "ee_soa_permissions"."rowRestriction" (
           "id"                          serial NOT NULL
         , "id_rowRestrictionOperator"   int NOT NULL
@@ -150,7 +150,7 @@
 
 
 
-    
+
     CREATE TABLE "ee_soa_permissions"."permissionObjectType" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
@@ -160,11 +160,11 @@
         , "deleted"             timestamp without time zone
         , CONSTRAINT "pk_permissionObjectType_id"
             PRIMARY KEY ("id")
-        , CONSTRAINT "unique_permissionObjectType_identifier" 
+        , CONSTRAINT "unique_permissionObjectType_identifier"
             UNIQUE ("identifier")
     );
 
-    
+
     CREATE TABLE "ee_soa_permissions"."permissionObject" (
           "id"                      serial NOT NULL
         , "id_permissionObjectType" int NOT NULL
@@ -175,14 +175,14 @@
         , "deleted"                 timestamp without time zone
         , CONSTRAINT "pk_permissionObject_id"
             PRIMARY KEY ("id")
-        , CONSTRAINT "unique_permissionObject_identifier" 
+        , CONSTRAINT "unique_permissionObject_identifier"
             UNIQUE ("identifier")
         , CONSTRAINT "fk_permissionObject_permissionObjectType_id" FOREIGN KEY ("id_permissionObjectType")
             REFERENCES "ee_soa_permissions"."permissionObjectType" ("id") MATCH SIMPLE
             ON UPDATE CASCADE ON DELETE RESTRICT
     );
 
-    
+
      CREATE TABLE "ee_soa_permissions"."permissionAction" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
@@ -192,11 +192,11 @@
         , "deleted"             timestamp without time zone
         , CONSTRAINT "pk_permissionAction_id"
             PRIMARY KEY ("id")
-        , CONSTRAINT "unique_permissionAction_identifier" 
+        , CONSTRAINT "unique_permissionAction_identifier"
             UNIQUE ("identifier")
     );
 
-    
+
     CREATE TABLE "ee_soa_permissions"."permission" (
           "id"                      serial NOT NULL
         , "id_permissionObject"     int NOT NULL
@@ -206,7 +206,7 @@
         , "deleted"                 timestamp without time zone
         , CONSTRAINT "pk_permission_id"
             PRIMARY KEY ("id")
-        , CONSTRAINT "unique_permission_object_action" 
+        , CONSTRAINT "unique_permission_object_action"
             UNIQUE ("id_permissionObject", "id_permissionAction")
         , CONSTRAINT "fk_permission_permissionObject_id" FOREIGN KEY ("id_permissionObject")
             REFERENCES "ee_soa_permissions"."permissionObject" ("id") MATCH SIMPLE
@@ -218,7 +218,7 @@
 
 
 
-    
+
     CREATE TABLE "ee_soa_permissions"."capability" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
@@ -228,7 +228,7 @@
         , "deleted"             timestamp without time zone
         , CONSTRAINT "pk_capability_id"
             PRIMARY KEY ("id")
-        , CONSTRAINT "unique_capability_identifier" 
+        , CONSTRAINT "unique_capability_identifier"
             UNIQUE ("identifier")
     );
 
@@ -241,7 +241,7 @@
         , "deleted"             timestamp without time zone
         , CONSTRAINT "pk_role_id"
             PRIMARY KEY ("id")
-        , CONSTRAINT "unique_role_identifier" 
+        , CONSTRAINT "unique_role_identifier"
             UNIQUE ("identifier")
     );
 
@@ -302,7 +302,7 @@
         , CONSTRAINT "fk_userGroup_tenant_id" FOREIGN KEY ("id_tenant")
             REFERENCES "ee_soa_permissions"."tenant" ("id") MATCH SIMPLE
             ON UPDATE CASCADE ON DELETE RESTRICT
-        , CONSTRAINT "unique_userGroup_identifier" 
+        , CONSTRAINT "unique_userGroup_identifier"
             UNIQUE ("identifier")
     );
 
@@ -346,7 +346,7 @@
         , "deleted"             timestamp without time zone
         , CONSTRAINT "pk_service_id"
             PRIMARY KEY ("id")
-        , CONSTRAINT "unique_service_identifier" 
+        , CONSTRAINT "unique_service_identifier"
             UNIQUE ("identifier")
     );
 
@@ -373,6 +373,8 @@
     ALTER TABLE "ee_soa_permissions"."accessToken" ADD CONSTRAINT check_user_or_service CHECK ((id_service is NULL and id_user is NOT NULL) or (id_service is NOT NULL and id_user is NULL));
 
 
+    ALTER TABLE "ee_soa_permissions"."permission" ADD column identifier varchar(150);
+    ALTER TABLE "ee_soa_permissions"."permission" ADD CONSTRAINT unique_permission_identifier UNIQUE ("identifier");
 
 
 
