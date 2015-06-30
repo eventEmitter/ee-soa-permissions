@@ -208,7 +208,7 @@
         it('should return the cached permission in less than 3 ms', function(done) {
             var start = Date.now();
 
-            permissions.getPermission(token).then(function(permission) {
+            permissions.getPermission(token).then(function(permission) { log(permission);
                 assert((Date.now()-start) < 3);
                 done();
             }).catch(done);
