@@ -337,9 +337,9 @@
 
 
 
-
     CREATE TABLE "ee_soa_permissions"."service" (
           "id"                  serial NOT NULL
+        , "id_tenant"           int
         , "identifier"          varchar(80) NOT NULL
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
@@ -348,6 +348,9 @@
             PRIMARY KEY ("id")
         , CONSTRAINT "unique_service_identifier"
             UNIQUE ("identifier")
+        , CONSTRAINT "fk_service_tenant_id" FOREIGN KEY ("id_tenant")
+            REFERENCES "ee_soa_permissions"."tenant" ("id") MATCH SIMPLE
+            ON UPDATE CASCADE ON DELETE CASCADE
     );
 
 
