@@ -358,7 +358,13 @@
 
 
 
-    INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('read', 'The read action that can be execute on permission objects', now());
+    INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('list', 'The list action that can be execute on permission objects', now());
+    INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('listOne', 'The listOne action that can be execute on permission objects', now());
     INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('create', 'The create action that can be execute on permission objects', now());
+    INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('createOrUpdate', 'The createOrUpdate action that can be execute on permission objects', now());
+    INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('createRelation', 'The createRelation action that can be execute on permission objects', now());
     INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('update', 'The update action that can be execute on permission objects', now());
+    INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('updateRelation', 'The updateRelation action that can be execute on permission objects', now());
     INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('delete', 'The delete action that can be execute on permission objects', now());
+    INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('deleteRelation', 'The deleteRelation action that can be execute on permission objects', now());
+    INSERT INTO "eventbooster"."permissionAction" ("identifier", "description", "created") VALUES ('describe', 'The describe action that can be execute on permission objects', now());
