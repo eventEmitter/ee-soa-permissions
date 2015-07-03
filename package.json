@@ -1,7 +1,7 @@
 {
       "name"                        : "ee-soa-permissions"
     , "description"                 : "ee-soa permissions magement"
-    , "version"                     : "0.1.11"
+    , "version"                     : "0.1.12"
     , "homepage"                    : "https://github.com/eventEmitter/ee-soa-permissions"
     , "author"                      : "Michael van der Weg <michael@joinbox.com> (http://joinbox.com/)"
     , "license"                     : "MIT"
@@ -20,6 +20,7 @@
         , "ee-event-emitter"        : "0.1.x"
         , "ee-types"                : "0.1.x"
         , "ee-log"                  : "0.3.x"
+        , "ee-argv"                 : "*"
         , "async-method"            : "0.1.x"
         , "cachd"                   : "0.2.x"
         , "es6-promise"             : "2.x.x"
