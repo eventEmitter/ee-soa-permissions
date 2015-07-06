@@ -202,4 +202,21 @@
                 done();
             }).catch(done);
         });
+
+
+        it('should not fail if the token was not found', function(done) {
+            permissions.getPermission('a').then(function(permission) {
+                assert(permission);
+                done();
+            }).catch(done);
+        });
+
+
+        it('should return the correct permissions for an invalid token', function(done) {
+            permissions.getPermission('a').then(function(permission) {
+                assert(permission.isActionAllowed('user', 'read') === false);
+                assert(permission.isActionAllowed('user', 'delete') === false);
+                done();
+            }).catch(done);
+        });
     });
