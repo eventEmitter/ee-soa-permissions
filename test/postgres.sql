@@ -60,6 +60,9 @@
         id_user integer,
         token character varying(64) NOT NULL,
         expires timestamp without time zone,
+         "created"             timestamp without time zone NOT NULL
+        , "updated"             timestamp without time zone
+        , "deleted"             timestamp without time zone,
         CONSTRAINT "pk_accessToken_id" PRIMARY KEY (id),
         CONSTRAINT "fk_accessToken_user_id" FOREIGN KEY (id_user)
           REFERENCES "ee_soa_permissions"."user" (id) MATCH SIMPLE

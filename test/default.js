@@ -261,4 +261,19 @@
                 done();
             }).catch(done);
         });
+
+
+        it('should remove expired tokens from the cache', function(done) {
+            this.timeout(10000);
+
+            // delete token from db, check if the cache is busted
+            db.accessToken({token: 'xx'}).delete().then(function() {
+                setTimeout(function() {
+                    permissions.getPermission('xx').then(function(permission) {
+                        assert(permission.hasCapability('canDoSomething') === false);
+                        done();
+                    }).catch(done);
+                }, 6000);
+            }.bind(this)).catch(done);
+        });
     });
