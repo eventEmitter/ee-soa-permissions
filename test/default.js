@@ -3,6 +3,7 @@
     var   Class             = require('ee-class')
         , log               = require('ee-log')
         , assert            = require('assert')
+        , crypto            = require('crypto')
         , type              = require('ee-types')
         , fs                = require('fs')
         , Config            = require('test-config')
@@ -17,6 +18,7 @@
         , config
         , sqlStatments
         , token
+        , token2
         , orm
         , permissions
         , db;
@@ -139,6 +141,37 @@
                 done();
             }).catch(done);
         });
+
+        it ('inserting test data III', function(done) {
+
+            new db.accessToken({
+                  token: 'xx'
+                , id_user: 1
+            }).save().then(function(aToken) {
+                return new db.user({
+                      tenant: db.tenant({name: 'a'})
+                    , accessToken: [aToken]
+                }).save();
+            }).then(function(user) {
+                return new db.userGroup({
+                      identifier: 'cap'
+                    , user: [user]
+                    , tenant: db.tenant({name: 'a'})
+                }).save();
+            }).then(function(group) {
+                return new db.role({
+                      identifier: 'cap'
+                    , userGroup: [group]
+                }).save();
+            }).then(function(role) {
+                return new db.capability({
+                      identifier: 'canDoSomething'
+                    , role: [role]
+                }).save();
+            }).then(function() {
+                done();
+            }).catch(done);
+        });
     });
 
 
@@ -216,6 +249,15 @@
             permissions.getPermission('a').then(function(permission) {
                 assert(permission.isActionAllowed('user', 'read') === false);
                 assert(permission.isActionAllowed('user', 'delete') === false);
+                done();
+            }).catch(done);
+        });
+
+
+        it('should check capabilities correctly', function(done) {
+            permissions.getPermission('xx').then(function(permission) {
+                assert(permission.hasCapability('non-existent') === false);
+                assert(permission.hasCapability('canDoSomething') === true);
                 done();
             }).catch(done);
         });
