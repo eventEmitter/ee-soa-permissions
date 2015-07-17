@@ -142,6 +142,8 @@
             }).catch(done);
         });
 
+
+
         it ('inserting test data III', function(done) {
 
             new db.accessToken({
@@ -198,6 +200,23 @@
             permissions.getPermission(token).then(function(permission) {
                 assert(permission.isActionAllowed('user', 'read'));
                 assert(permission.isActionAllowed('user', 'delete') === false);
+                done();
+            }).catch(done);
+        });
+
+
+        it('should return object permissions correctly', function(done) {
+            permissions.getPermission(token).then(function(permission) {
+                assert.deepEqual(permission.getObjectPermissions('user'), {"read":{"allowed":true,"roles":["emotions-user"]},"update":{"allowed":true,"roles":["emotions-user"]},"create":{"allowed":true,"roles":["emotions-user"]}});
+                done();
+            }).catch(done);
+        });
+
+
+
+        it('should return capabilities correctly', function(done) {
+            permissions.getPermission('xx').then(function(permission) {
+                assert.deepEqual(permission.getCapabilities(), { canDoSomething: { roles: [ 'cap' ] } });
                 done();
             }).catch(done);
         });
