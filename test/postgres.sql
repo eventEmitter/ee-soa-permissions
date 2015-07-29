@@ -390,3 +390,37 @@
     INSERT INTO "ee_soa_permissions"."permissionAction" ("identifier", "description", "created") VALUES ('create', 'The create action that can be execute on permission objects', now());
     INSERT INTO "ee_soa_permissions"."permissionAction" ("identifier", "description", "created") VALUES ('update', 'The update action that can be execute on permission objects', now());
     INSERT INTO "ee_soa_permissions"."permissionAction" ("identifier", "description", "created") VALUES ('delete', 'The delete action that can be execute on permission objects', now());
+
+
+
+
+
+    ALTER TABLE "ee_soa_permissions"."rowRestriction" ADD COLUMN "nullable" boolean;
+    ALTER TABLE "ee_soa_permissions"."rowRestriction" ALTER COLUMN "nullable" SET NOT NULL;
+    ALTER TABLE "ee_soa_permissions"."rowRestriction" ALTER COLUMN "nullable" SET DEFAULT false;
+
+
+    ALTER TABLE "ee_soa_permissions"."rowRestriction" DROP COLUMN inverted;
+
+
+    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('=', 'the value in the column must equal to', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('!=', 'the value in the column must not equal to', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('in', 'the value in the column must be one of', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('notIn', 'the value in the column must be not on of', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('>', 'the value in the column must be greather than', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('<', 'the value in the column must be less than', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('>=', 'the value in the column must be greather than or equal to', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('<=', 'the value in the column must be less than or equal to', now());
+
+
+    INSERT INTO "ee_soa_permissions"."rowRestrictionValueType" ("identifier", "description", "created") VALUES ('constant', 'the column must be compared to a constant value', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionValueType" ("identifier", "description", "created") VALUES ('function', 'the column must be compared to the result fo a function', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionValueType" ("identifier", "description", "created") VALUES ('variable', 'the column must be compared to a variable', now());
+
+
+
+    INSERT INTO "ee_soa_permissions"."rowRestriction" ("id_rowRestrictionOperator", "id_rowRestrictionValueType", "column", "value", "created") VALUES (1, 3, 'id_tenant', 'tenant.id', now());
+
+    INSERT INTO "ee_soa_permissions"."rowRestrictionEntity" ("identifier", "created") VALUES ('persons', now());
+
+    INSERT INTO "ee_soa_permissions"."rowRestriction_rowRestrictionEntity" ("id_rowRestriction", "id_rowRestrictionEntity") VALUES (1, 1);

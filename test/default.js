@@ -136,6 +136,7 @@
                       identifier: 'emotions-user'
                     , permission: db.permission({id: ORM.in(permissions.map(function(p) {return p.id;}))})
                     , userGroup: db.userGroup({identifier: 'emotions-users'})
+                    , rowRestriction: [db.rowRestriction().limit(1)]
                 }).save();
             }).then(function(role) {
                 done();
@@ -259,6 +260,17 @@
         it('should not fail if the token was not found', function(done) {
             permissions.getPermission('a').then(function(permission) {
                 assert(permission);
+                done();
+            }).catch(done);
+        });
+
+
+        it('should return the correct restrictions for a token', function(done) {
+            permissions.getPermission(token).then(function(permission) {
+                assert.deepEqual(permission.getRowRestrictions('persons'), { id_tenant: [ { operator: '=',
+                   type: 'variable',
+                   value: 'tenant.id',
+                   nullable: false } ] });
                 done();
             }).catch(done);
         });
