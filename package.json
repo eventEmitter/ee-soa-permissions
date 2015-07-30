@@ -10,7 +10,7 @@
         , "type"                    : "git"
     }
     , "engines": {
-        "node"                      : ">=v0.10.17"
+        "node"                      : ">=v0.12.0"
     }
     , "bugs": {
         "url"                       : "https://github.com/eventEmitter/ee-soa-permissions/issues"
@@ -23,7 +23,6 @@
         , "ee-argv"                 : "*"
         , "async-method"            : "0.1.x"
         , "cachd"                   : "0.2.x"
-        , "es6-promise"             : "2.x.x"
     }
     , "devDependencies": {
           "mocha"                   : "1.17.x"

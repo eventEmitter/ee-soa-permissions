@@ -73,16 +73,16 @@
 
 
 
-    CREATE TABLE "ee_soa_permissions"."rowRestrictionOperator" (
+    CREATE TABLE "ee_soa_permissions"."rowRestrictionComperator" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
         , "description"          text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
-        , CONSTRAINT "pk_rowRestrictionOperator_id"
+        , CONSTRAINT "pk_rowRestrictionComperator_id"
             PRIMARY KEY ("id")
-        , CONSTRAINT "unique_rowRestrictionOperator_identifier"
+        , CONSTRAINT "unique_rowRestrictionComperator_identifier"
             UNIQUE ("identifier")
     );
 
@@ -117,7 +117,7 @@
 
     CREATE TABLE "ee_soa_permissions"."rowRestriction" (
           "id"                          serial NOT NULL
-        , "id_rowRestrictionOperator"   int NOT NULL
+        , "id_rowRestrictionComperator"   int NOT NULL
         , "id_rowRestrictionValueType"  int NOT NULL
         , "column"                      varchar(500) NOT NULL
         , "value"                       varchar(500) NOT NULL
@@ -128,8 +128,8 @@
         , "deleted"                     timestamp without time zone
         , CONSTRAINT "pk_rowRestriction_id"
             PRIMARY KEY ("id")
-        , CONSTRAINT "fk_rowRestriction_rowRestrictionOperator_id" FOREIGN KEY ("id_rowRestrictionOperator")
-            REFERENCES "ee_soa_permissions"."rowRestrictionOperator" ("id") MATCH SIMPLE
+        , CONSTRAINT "fk_rowRestriction_rowRestrictionComperator_id" FOREIGN KEY ("id_rowRestrictionComperator")
+            REFERENCES "ee_soa_permissions"."rowRestrictionComperator" ("id") MATCH SIMPLE
             ON UPDATE CASCADE ON DELETE RESTRICT
         , CONSTRAINT "fk_rowRestriction_rowRestrictionValueType_id" FOREIGN KEY ("id_rowRestrictionValueType")
             REFERENCES "ee_soa_permissions"."rowRestrictionValueType" ("id") MATCH SIMPLE
@@ -399,18 +399,22 @@
     ALTER TABLE "ee_soa_permissions"."rowRestriction" ALTER COLUMN "nullable" SET NOT NULL;
     ALTER TABLE "ee_soa_permissions"."rowRestriction" ALTER COLUMN "nullable" SET DEFAULT false;
 
+    ALTER TABLE "ee_soa_permissions"."rowRestriction" ADD COLUMN "global" boolean;
+    ALTER TABLE "ee_soa_permissions"."rowRestriction" ALTER COLUMN "global" SET NOT NULL;
+    ALTER TABLE "ee_soa_permissions"."rowRestriction" ALTER COLUMN "global" SET DEFAULT false;
+
 
     ALTER TABLE "ee_soa_permissions"."rowRestriction" DROP COLUMN inverted;
 
 
-    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('=', 'the value in the column must equal to', now());
-    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('!=', 'the value in the column must not equal to', now());
-    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('in', 'the value in the column must be one of', now());
-    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('notIn', 'the value in the column must be not on of', now());
-    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('>', 'the value in the column must be greather than', now());
-    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('<', 'the value in the column must be less than', now());
-    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('>=', 'the value in the column must be greather than or equal to', now());
-    INSERT INTO "ee_soa_permissions"."rowRestrictionOperator" ("identifier", "description", "created") VALUES ('<=', 'the value in the column must be less than or equal to', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionComperator" ("identifier", "description", "created") VALUES ('=', 'the value in the column must equal to', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionComperator" ("identifier", "description", "created") VALUES ('!=', 'the value in the column must not equal to', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionComperator" ("identifier", "description", "created") VALUES ('in', 'the value in the column must be one of', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionComperator" ("identifier", "description", "created") VALUES ('notIn', 'the value in the column must be not on of', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionComperator" ("identifier", "description", "created") VALUES ('>', 'the value in the column must be greather than', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionComperator" ("identifier", "description", "created") VALUES ('<', 'the value in the column must be less than', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionComperator" ("identifier", "description", "created") VALUES ('>=', 'the value in the column must be greather than or equal to', now());
+    INSERT INTO "ee_soa_permissions"."rowRestrictionComperator" ("identifier", "description", "created") VALUES ('<=', 'the value in the column must be less than or equal to', now());
 
 
     INSERT INTO "ee_soa_permissions"."rowRestrictionValueType" ("identifier", "description", "created") VALUES ('constant', 'the column must be compared to a constant value', now());
@@ -419,7 +423,7 @@
 
 
 
-    INSERT INTO "ee_soa_permissions"."rowRestriction" ("id_rowRestrictionOperator", "id_rowRestrictionValueType", "column", "value", "created") VALUES (1, 3, 'id_tenant', 'tenant.id', now());
+    INSERT INTO "ee_soa_permissions"."rowRestriction" ("id_rowRestrictionComperator", "id_rowRestrictionValueType", "column", "value", "created") VALUES (1, 3, 'id_tenant', 'tenant.id', now());
 
     INSERT INTO "ee_soa_permissions"."rowRestrictionEntity" ("identifier", "created") VALUES ('persons', now());
 
