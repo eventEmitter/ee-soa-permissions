@@ -296,6 +296,14 @@
         });
 
 
+        it('should return the correct permissions info', function(done) {
+            permissions.getPermission(['xx', token]).then(function(permission) {
+                assert.deepEqual(permission.getInfo(), {"permissions":{"user":{"create":{"allowed":true,"roles":["emotions-user"]},"update":{"allowed":true,"roles":["emotions-user"]},"read":{"allowed":true,"roles":["emotions-user"]}}},"capabilities":{"canDoSomething":{"roles":["cap"]}},"roles":[{"name":"emotions-user","permissions":{"user":{"create":true,"update":true,"read":true}},"capabilities":{},"restrictionIds":[1]},{"name":"cap","permissions":{},"capabilities":{"canDoSomething":true},"restrictionIds":[]}]});
+                done();
+            }).catch(done);
+        });
+
+
         it('should remove expired tokens from the cache', function(done) {
             this.timeout(10000);
 
