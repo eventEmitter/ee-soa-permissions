@@ -1,6 +1,6 @@
 !function() {
 
 	module.exports = require('./lib/SOAPermissions');
-    module.exports.AccesssToken = require('./lib/AccessToken');
+    module.exports.AccessToken = require('./lib/AccessToken');
 
 }();
