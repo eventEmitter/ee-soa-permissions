@@ -267,12 +267,8 @@
 
         it('should return the correct restrictions for a token', function(done) {
             permissions.getPermission(token).then(function(permission) {
-                assert.deepEqual(permission.getRowRestrictions('persons'),  [ { value: 'tenant.id',
-                    column: 'id_tenant',
-                    comperator: '=',
-                    type: 'variable',
-                    entities: { persons: true } } ]
-                );
+                assert.deepEqual(permission.getRowRestrictions().get('persons'), [{"value":"tenant.id","column":"id_tenant","fullPath":"id_tenant","comperator":"=","type":"variable","entities":{"persons":true}}]);
+
                 done();
             }).catch(done);
         });
