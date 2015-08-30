@@ -257,6 +257,15 @@
         });
 
 
+        it('should return the tenant if reuqested', function(done) {
+            permissions.getPermission(token).then(function(permission) {
+                assert(permission.hasTenant());
+                assert(permission.getFirstTenant());
+                done();
+            }).catch(done);
+        });
+
+
         it('should not fail if the token was not found', function(done) {
             permissions.getPermission('a').then(function(permission) {
                 assert(permission);
