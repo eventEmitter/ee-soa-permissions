@@ -6,16 +6,16 @@
     --- ROWRESTRICTION ---
     ----------------------
 
-    CREATE TABLE "eventbooster"."rowRestrictionOperator" (
+    CREATE TABLE "eventbooster"."rowRestrictionComperator" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "description"          text
+        , "description"         text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
-        , CONSTRAINT "pk_rowRestrictionOperator_id"
+        , CONSTRAINT "pk_rowRestrictionComperator_id"
             PRIMARY KEY ("id")
-        , CONSTRAINT "unique_rowRestrictionOperator_identifier"
+        , CONSTRAINT "unique_rowRestrictionComperator_identifier"
             UNIQUE ("identifier")
     );
 
@@ -23,7 +23,7 @@
     CREATE TABLE "eventbooster"."rowRestrictionValueType" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "description"          text
+        , "description"         text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
@@ -37,7 +37,7 @@
     CREATE TABLE "eventbooster"."rowRestrictionEntity" (
           "id"                  serial NOT NULL
         , "identifier"          varchar(80) NOT NULL
-        , "description"          text
+        , "description"         text
         , "created"             timestamp without time zone NOT NULL
         , "updated"             timestamp without time zone
         , "deleted"             timestamp without time zone
@@ -48,9 +48,23 @@
     );
 
 
+    CREATE TABLE "eventbooster"."rowRestrictionAction" (
+          "id"                  serial NOT NULL
+        , "identifier"          varchar(80) NOT NULL
+        , "description"         text
+        , "created"             timestamp without time zone NOT NULL
+        , "updated"             timestamp without time zone
+        , "deleted"             timestamp without time zone
+        , CONSTRAINT "pk_rowRestrictionAction_id"
+            PRIMARY KEY ("id")
+        , CONSTRAINT "unique_rowRestrictionAction_identifier"
+            UNIQUE ("identifier")
+    );
+
+
     CREATE TABLE "eventbooster"."rowRestriction" (
           "id"                          serial NOT NULL
-        , "id_rowRestrictionOperator"   int NOT NULL
+        , "id_rowRestrictionComperator" int NOT NULL
         , "id_rowRestrictionValueType"  int NOT NULL
         , "column"                      varchar(500) NOT NULL
         , "value"                       varchar(500) NOT NULL
@@ -61,8 +75,8 @@
         , "deleted"                     timestamp without time zone
         , CONSTRAINT "pk_rowRestriction_id"
             PRIMARY KEY ("id")
-        , CONSTRAINT "fk_rowRestriction_rowRestrictionOperator_id" FOREIGN KEY ("id_rowRestrictionOperator")
-            REFERENCES "eventbooster"."rowRestrictionOperator" ("id") MATCH SIMPLE
+        , CONSTRAINT "fk_rowRestriction_rowRestrictionComperator_id" FOREIGN KEY ("id_rowRestrictionComperator")
+            REFERENCES "eventbooster"."rowRestrictionComperator" ("id") MATCH SIMPLE
             ON UPDATE CASCADE ON DELETE RESTRICT
         , CONSTRAINT "fk_rowRestriction_rowRestrictionValueType_id" FOREIGN KEY ("id_rowRestrictionValueType")
             REFERENCES "eventbooster"."rowRestrictionValueType" ("id") MATCH SIMPLE
@@ -80,6 +94,20 @@
             ON UPDATE CASCADE ON DELETE CASCADE
         , CONSTRAINT "fk_rowRestriction_rowRestrictionEntity_rowRestrictionEntity_id" FOREIGN KEY ("id_rowRestrictionEntity")
             REFERENCES "eventbooster"."rowRestrictionEntity" ("id") MATCH SIMPLE
+            ON UPDATE CASCADE ON DELETE CASCADE
+    );
+
+
+    CREATE TABLE "eventbooster"."rowRestriction_rowRestrictionAction" (
+          "id_rowRestriction"             int NOT NULL
+        , "id_rowRestrictionAction"       int NOT NULL
+        , CONSTRAINT "pk_rowRestriction_rowRestrictionAction_id"
+            PRIMARY KEY ("id_rowRestriction", "id_rowRestrictionAction")
+        , CONSTRAINT "fk_rowRestriction_rowRestrictionAction_rowRestriction_id" FOREIGN KEY ("id_rowRestriction")
+            REFERENCES "eventbooster"."rowRestriction" ("id") MATCH SIMPLE
+            ON UPDATE CASCADE ON DELETE CASCADE
+        , CONSTRAINT "fk_rowRestriction_rowRestrictionAction_rowRestrictionAction_id" FOREIGN KEY ("id_rowRestrictionAction")
+            REFERENCES "eventbooster"."rowRestrictionAction" ("id") MATCH SIMPLE
             ON UPDATE CASCADE ON DELETE CASCADE
     );
 
