@@ -8,6 +8,13 @@
     set search_path to ee_soa_permissions;
 
 
+    CREATE TABLE "address" (
+        id serial NOT NULL,
+        name character varying(45) NOT NULL,
+        CONSTRAINT pk_address_id PRIMARY KEY (id),
+        CONSTRAINT unique_address_name UNIQUE (name)
+    );
+
 
     CREATE TABLE "tenant" (
         id serial NOT NULL,
@@ -433,28 +440,99 @@
     INSERT INTO "rowRestriction_rowRestrictionEntity" ("id_rowRestriction", "id_rowRestrictionEntity") VALUES (1, 1);
 
 
+   
+
+    set search_path to eventbooster;
+
+
+
+    CREATE TABLE "company" (
+          "id"                serial
+        , "id_tenant"         int not null
+        , "id_address"        int
+        , "identifier"        varchar (100) NOT NULL
+        , "name"              varchar (200) NOT NULL
+        , "created"           timestamp without time zone NOT NULL DEFAULT now()
+        , "updated"           timestamp without time zone NOT NULL DEFAULT now()
+        , "deleted"           timestamp without time zone
+        , CONSTRAINT "company_pk" 
+            PRIMARY KEY ("id")
+        , CONSTRAINT "company_fk_tenant_id" 
+            FOREIGN KEY ("id_tenant")
+            REFERENCES "tenant" ("id")
+            ON UPDATE CASCADE
+            ON DELETE RESTRICT
+        , CONSTRAINT "company_fk_address_id" 
+            FOREIGN KEY ("id_address")
+            REFERENCES "address" ("id")
+            ON UPDATE CASCADE
+            ON DELETE RESTRICT
+    );
+
+
+    CREATE TABLE "companyUserRole" (
+          "id"                serial
+        , "identifier"        varchar (100) NOT NULL
+        , "description"       text
+        , "created"           timestamp without time zone NOT NULL DEFAULT now()
+        , "updated"           timestamp without time zone NOT NULL DEFAULT now()
+        , "deleted"           timestamp without time zone
+        , CONSTRAINT "companyUserRole_pk" 
+            PRIMARY KEY ("id")
+    );
+
+
+
+    CREATE TABLE "company_user" (
+          "id_company"         int not null
+        , "id_user"            int not null
+        , "id_companyUserRole" int not null
+        , CONSTRAINT "company_user_pk" 
+            PRIMARY KEY ("id_company", "id_user")
+        , CONSTRAINT "company_user_fk_user_id" 
+            FOREIGN KEY ("id_user")
+            REFERENCES "user" ("id")
+            ON UPDATE CASCADE
+            ON DELETE RESTRICT
+        , CONSTRAINT "company_user_fk_company_id" 
+            FOREIGN KEY ("id_company")
+            REFERENCES "company" ("id")
+            ON UPDATE CASCADE
+            ON DELETE RESTRICT
+        , CONSTRAINT "company_user_fk_companyUserRole_id" 
+            FOREIGN KEY ("id_companyUserRole")
+            REFERENCES "companyUserRole" ("id")
+            ON UPDATE CASCADE
+            ON DELETE RESTRICT
+    );
+
+
+
 
 
 
     CREATE TABLE "app" (
           "id"                serial
-        , "id_user"           int not null
         , "id_tenant"         int not null
-        , "name"              varchar (100) NOT NULL
+        , "id_company"        int not null
         , "identifier"        varchar (100) NOT NULL
+        , "name"              varchar (200) NOT NULL
+        , "contactEmail"      varchar (200) NOT NULL
+        , "contactPhone"      varchar (200) 
+        , "comments"          text
         , "created"           timestamp without time zone NOT NULL DEFAULT now()
         , "updated"           timestamp without time zone NOT NULL DEFAULT now()
-        , "deleted"           timestamp without time zone NOT NULL 
+        , "deleted"           timestamp without time zone
         , CONSTRAINT "app_pk" 
             PRIMARY KEY ("id")
-        , CONSTRAINT "app_fk_user_id" 
-            FOREIGN KEY ("id_user")
-            REFERENCES "user" ("id")
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT
         , CONSTRAINT "app_fk_tenant_id" 
             FOREIGN KEY ("id_tenant")
             REFERENCES "tenant" ("id")
+            ON UPDATE CASCADE
+            ON DELETE RESTRICT
+        , CONSTRAINT "app_fk_company_id" 
+            FOREIGN KEY ("id_company")
+            REFERENCES "company" ("id")
             ON UPDATE CASCADE
             ON DELETE RESTRICT
     );
@@ -465,7 +543,7 @@
           "id_app"            int not null
         , "id_role"           int not null
         , CONSTRAINT "app_role_pk" 
-            PRIMARY KEY ("id_app", "id_role")
+            PRIMARY KEY ("id_role", "id_app")
         , CONSTRAINT "app_role_fk_role_id" 
             FOREIGN KEY ("id_role")
             REFERENCES "role" ("id")
@@ -490,7 +568,7 @@
         , "burstLimit"        int not null
         , "created"           timestamp without time zone NOT NULL DEFAULT now()
         , "updated"           timestamp without time zone NOT NULL DEFAULT now()
-        , "deleted"           timestamp without time zone NOT NULL 
+        , "deleted"           timestamp without time zone
         , CONSTRAINT "rateLimit_pk" 
             PRIMARY KEY ("id")
         , CONSTRAINT "rateLimit_fk_app_id" 
@@ -521,17 +599,13 @@
 
 
 
-
     ALTER TABLE "accessToken" DROP CONSTRAINT check_user_or_service;
-
     ALTER TABLE "accessToken" ADD column "id_app" int;
-
     ALTER TABLE "accessToken" ADD CONSTRAINT "fk_accesstoken_app_id" 
             FOREIGN KEY ("id_app")
             REFERENCES "app" ("id")
             ON UPDATE CASCADE
             ON DELETE RESTRICT;
-
     ALTER TABLE "accessToken" ADD CONSTRAINT "check_user_or_service_or_app" 
             CHECK (
                 id_service IS NULL AND id_app IS NULL AND id_user IS NOT NULL 

@@ -1,3 +1,6 @@
+(function() {
+    'use strict';
+
 
 
     var   Class             = require('ee-class')
@@ -66,22 +69,27 @@
             });
         });
 
-        it('should be able to drop & create the testing schema ('+sqlStatments.length+' raw SQL queries)', function(done) {
-            orm.getDatabase(databaseName).getConnection(function(err, connection){
-                if (err) done(err);
-                else {
-                    var exec = function(query) {
-                        connection.queryRaw(query, function(err) {
-                            if (err) log(err, query);
-                            else if (sqlStatments.length) exec(sqlStatments.shift());
-                            else done();
-                        })
-                    };
 
-                    exec(sqlStatments.shift());
-                }
-            });
+
+        it('should be able to drop & create the testing schema ('+sqlStatments.length+' raw SQL queries)', function(done) {
+            this.timeout(5000);
+
+            let db = orm[databaseName];
+
+            
+            let exec = function(query) {
+                db.executeQuery(`set search_path to ${databaseName}; ${query}`).then(() => {
+                    if (sqlStatments.length) exec(sqlStatments.shift());
+                    else done();
+                }).catch(done);
+            };
+
+
+            exec(sqlStatments.shift());
         });
+
+
+
 
         it ('should be able to reload the models', function(done) {
             orm.reload(function(err){
@@ -92,6 +100,7 @@
                 }
             });
         });
+
 
 
         it ('inserting test data I', function(done) {
@@ -119,6 +128,7 @@
 
         });
 
+
         it ('inserting test data II', function(done) {
             new db.permissionObject({
                   permissionObjectType: db.permissionObjectType({identifier: 'controller'})
@@ -142,6 +152,7 @@
                 done();
             }).catch(done);
         });
+
 
 
 
@@ -174,6 +185,62 @@
             }).then(function() {
                 done();
             }).catch(done);
+        });
+
+
+
+
+
+
+
+
+        it ('inserting test data IV', function(done) {
+            let appTenant;
+
+            new db.tenant({
+                name: 'api'
+            }).save().then((tenant) => {
+                appTenant = tenant;
+
+                return new db.user({
+                    tenant: tenant
+                }).save();
+            }).then((user) => {
+                return new db.company({
+                      tenant: appTenant
+                    , identifier: 'joinbox'
+                    , name: 'Joinbox Ltd.'
+                    , company_user: [new db.company_user({
+                          user: user
+                        , companyUserRole: new db.companyUserRole({
+                            identifier: 'admin'
+                        })
+                    })]
+                }).save();
+            }).then((company) => {
+                return new db.app({
+                      tenant: appTenant
+                    , company: company
+                    , identifier: 'api-client'
+                    , name: 'api tester'
+                    , contactEmail: 'anna@joinbox.com'
+                }).save();
+            }).then((app) => {
+                return new db.accessToken({
+                      token: 'appToken'
+                    , app: app
+                }).save().then(() => {
+                    return new db.role({
+                          app: [app]
+                        , identifier: 'app-role'
+                    }).save();
+                });
+            }).then((role) => {
+                return new db.capability({
+                      identifier: 'appIsAllowedTo'
+                    , role: [role]
+                }).save();
+            }).then(() => done()).catch(done);
         });
     });
 
@@ -322,4 +389,17 @@
                 }, 6000);
             }.bind(this)).catch(done);
         });
+
+
+
+
+
+        it('should return the correct permissions info for an app token', function(done) {
+            permissions.getPermission('appToken').then(function(permission) {
+                assert.deepEqual(permission.getInfo(), {"permissions":{},"capabilities":{"appIsAllowedTo":{"roles":["app-role"]}},"roles":[{"name":"app-role","permissions":{},"capabilities":{"appIsAllowedTo":true},"restrictionIds":[]}]});
+                done();
+            }).catch(done);
+        });
     });
+
+})();
