@@ -62,7 +62,7 @@
             this.timeout(5000);
             new ORM(config).use(new Timestamps()).load(function(err, ormObject) {
                 if (err) done(err);
-                else {log(ormObject);
+                else {
                     orm = ormObject;
                     done();
                 }
@@ -73,8 +73,6 @@
 
         it('should be able to drop & create the testing schema ('+sqlStatments.length+' raw SQL queries)', function(done) {
             this.timeout(5000);
-
-            log(orm);
 
             let db = orm[databaseName];
 
