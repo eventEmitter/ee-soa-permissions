@@ -74,6 +74,8 @@
         it('should be able to drop & create the testing schema ('+sqlStatments.length+' raw SQL queries)', function(done) {
             this.timeout(5000);
 
+            log(orm);
+
             let db = orm[databaseName];
 
             
