@@ -43,8 +43,6 @@
     }]}).db.filter(function(config) {return config.schema === databaseName});
 
 
-    log(config);
-
 
 
     // sql for test db
@@ -64,7 +62,7 @@
             this.timeout(5000);
             new ORM(config).use(new Timestamps()).load(function(err, ormObject) {
                 if (err) done(err);
-                else {
+                else {log(ormObject);
                     orm = ormObject;
                     done();
                 }
@@ -76,9 +74,10 @@
         it('should be able to drop & create the testing schema ('+sqlStatments.length+' raw SQL queries)', function(done) {
             this.timeout(5000);
 
+            log(orm);
+
             let db = orm[databaseName];
 
-            
             let exec = function(query) {
                 db.executeQuery(`set search_path to ${databaseName}; ${query}`).then(() => {
                     if (sqlStatments.length) exec(sqlStatments.shift());
