@@ -440,11 +440,7 @@
     INSERT INTO "rowRestriction_rowRestrictionEntity" ("id_rowRestriction", "id_rowRestrictionEntity") VALUES (1, 1);
 
 
-   
-
-    set search_path to eventbooster;
-
-
+    
 
     CREATE TABLE "company" (
           "id"                serial
