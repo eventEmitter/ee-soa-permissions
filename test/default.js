@@ -29,19 +29,21 @@
 
 
     config = new Config('config-test.js', {db:[{
-          schema        : 'ee_soa_permissions'
-        , database      : 'test'
-        , type          : 'postgres'
+          type      : 'postgres'
+        , database  : 'test'
+        , schema    : 'ee_soa_permissions'
         , hosts: [{
-              host      : 'localhost'
-            , username  : 'postgres'
-            , password  : ''
-            , port      : 5432
-            , mode      : 'readwrite'
-            , maxConnections: 20
+              host              : 'localhost'
+            , username          : 'postgres'
+            , password          : ''
+            , port              : 5432
+            , pools             : ['write', 'read']
+            , maxConnections    : 20
         }]
     }]}).db.filter(function(config) {return config.schema === databaseName});
 
+
+    log(config);
 
 
 
@@ -73,8 +75,6 @@
 
         it('should be able to drop & create the testing schema ('+sqlStatments.length+' raw SQL queries)', function(done) {
             this.timeout(5000);
-
-            log(orm);
 
             let db = orm[databaseName];
 
