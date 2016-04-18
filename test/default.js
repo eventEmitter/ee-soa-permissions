@@ -224,6 +224,10 @@
                     , identifier: 'api-client'
                     , name: 'api tester'
                     , contactEmail: 'anna@joinbox.com'
+                    , rateLimit: new db.rateLimit({
+                          interval: 60
+                        , credits: 5000
+                    })
                 }).save();
             }).then((app) => {
                 return new db.accessToken({
@@ -391,15 +395,27 @@
         });
 
 
-
-
-
         it('should return the correct permissions info for an app token', function(done) {
             permissions.getPermission('appToken').then(function(permission) {
                 assert.deepEqual(permission.getInfo(), {"permissions":{},"capabilities":{"appIsAllowedTo":{"roles":["app-role"]}},"roles":[{"name":"app-role","permissions":{},"capabilities":{"appIsAllowedTo":true},"restrictionIds":[]}]});
                 done();
             }).catch(done);
         });
-    });
 
+
+
+
+        it('should return the correct rate limit for an app token', function(done) {
+            permissions.getPermission('appToken').then(function(permission) {
+                return permission.getRateLimitInfo().then((info) => {
+                    assert.deepEqual(info, {"left":5000,"interval":60,"capacity":5000});
+
+                    return permission.payRateLimit(2500).then((newInfo) => {
+                        assert(newInfo.left >= 2500);
+                        done();
+                    });                    
+                });
+            }).catch(done);
+        });
+    });
 })();

@@ -18,11 +18,12 @@
     , "dependencies": {
           "ee-class"                : "1.x"
         , "cachd"                   : "1.x"
+        , "leaky-bucket"            : "2.x"
         , "ee-types"                : "1.x"
+        , "ee-argv"                 : "1.x"
         , "ee-event-emitter"        : "0.3.x"
         , "ee-log"                  : "0.3.x"
         , "async-method"            : "0.1.x"
-        , "ee-argv"                 : "*"
     }
     , "devDependencies": {
           "mocha"                   : "2.x"

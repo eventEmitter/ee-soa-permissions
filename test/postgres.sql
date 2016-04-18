@@ -511,10 +511,26 @@
 
 
 
+    CREATE TABLE "rateLimit" (
+          "id"                serial
+        , "interval"          int not null
+        , "credits"           int not null
+        , "comment"           text
+        , "created"           timestamp without time zone NOT NULL DEFAULT now()
+        , "updated"           timestamp without time zone NOT NULL DEFAULT now()
+        , "deleted"           timestamp without time zone
+        , CONSTRAINT "rateLimit_pk" 
+            PRIMARY KEY ("id")
+    );
+
+
+
+
     CREATE TABLE "app" (
           "id"                serial
         , "id_tenant"         int not null
         , "id_company"        int not null
+        , "id_rateLimit"      int
         , "identifier"        varchar (100) NOT NULL
         , "name"              varchar (200) NOT NULL
         , "contactEmail"      varchar (200) NOT NULL
@@ -533,6 +549,11 @@
         , CONSTRAINT "app_fk_company_id" 
             FOREIGN KEY ("id_company")
             REFERENCES "company" ("id")
+            ON UPDATE CASCADE
+            ON DELETE RESTRICT
+        , CONSTRAINT "app_fk_rateLimit_id" 
+            FOREIGN KEY ("id_rateLimit")
+            REFERENCES "rateLimit" ("id")
             ON UPDATE CASCADE
             ON DELETE RESTRICT
     );
@@ -557,45 +578,6 @@
     );
 
 
-
-
-    CREATE TABLE "rateLimit" (
-          "id"                serial
-        , "id_app"            int not null
-        , "comment"           text
-        , "interval"          int not null
-        , "limit"             int not null
-        , "burstLimit"        int not null
-        , "created"           timestamp without time zone NOT NULL DEFAULT now()
-        , "updated"           timestamp without time zone NOT NULL DEFAULT now()
-        , "deleted"           timestamp without time zone
-        , CONSTRAINT "rateLimit_pk" 
-            PRIMARY KEY ("id")
-        , CONSTRAINT "rateLimit_fk_app_id" 
-            FOREIGN KEY ("id_app")
-            REFERENCES "app" ("id")
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT
-    );
-
-
-    CREATE TABLE "rateLimitRequestLog" (
-          "id"                serial
-        , "id_rateLimit"      int not null
-        , "cost"              int not null
-        , "costFactor"        numeric(4,2)
-        , "url"               varchar (300) not null
-        , "responseSize"      int not null
-        , "headers"           json not null
-        , "created"           timestamp without time zone NOT NULL DEFAULT now()
-        , CONSTRAINT "rateLimitRequestLog_pk" 
-            PRIMARY KEY ("id")
-        , CONSTRAINT "rateLimitRequestLog_fk_rateLimit_id" 
-            FOREIGN KEY ("id_rateLimit")
-            REFERENCES "rateLimit" ("id")
-            ON UPDATE CASCADE
-            ON DELETE CASCADE
-    );
 
 
 
