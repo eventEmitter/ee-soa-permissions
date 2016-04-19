@@ -57,13 +57,6 @@
     // connecting & rebvuilding the test database
     describe('[Setting up the db]', function(){
 
-        it('waiting', function(done) {
-            this.timeout(5000);
-            setTimeout(done, 4500);
-        });
-
-
-
         it('should be able to connect to the database', function(done) {
             this.timeout(5000);
             new ORM(config).use(new Timestamps()).load(function(err, ormObject) {
