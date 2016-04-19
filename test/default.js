@@ -6,8 +6,6 @@
     var   Class             = require('ee-class')
         , log               = require('ee-log')
         , assert            = require('assert')
-        , crypto            = require('crypto')
-        , type              = require('ee-types')
         , fs                = require('fs')
         , Config            = require('test-config')
         , ORM               = require('related')
@@ -17,11 +15,11 @@
 
 
 
+
     var   databaseName = 'ee_soa_permissions'
         , config
         , sqlStatments
         , token
-        , token2
         , orm
         , permissions
         , db;
@@ -47,7 +45,7 @@
 
     // sql for test db
     sqlStatments = fs.readFileSync(__dirname+'/postgres.sql').toString().split(';').map(function(input){
-        return input.trim().replace(/\n/gi, ' ').replace(/\s{2,}/g, ' ')
+        return input.trim().replace(/\n/gi, ' ').replace(/\s{2,}/g, ' ');
     }).filter(function(item){
         return item.length;
     });
@@ -58,6 +56,14 @@
 
     // connecting & rebvuilding the test database
     describe('[Setting up the db]', function(){
+
+        it('waiting', function(done) {
+            this.timeout(5000);
+            setTimeout(done, 4500);
+        });
+
+
+
         it('should be able to connect to the database', function(done) {
             this.timeout(5000);
             new ORM(config).use(new Timestamps()).load(function(err, ormObject) {

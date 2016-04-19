@@ -27,7 +27,7 @@
     }
     , "devDependencies": {
           "mocha"                   : "2.x"
-        , "related"                 : "2.1.9"
+        , "related"                 : "2.x"
         , "related-timestamps"      : "2.x"
         , "test-config"             : "*"
     }
