@@ -511,6 +511,7 @@
           "id"                serial
         , "interval"          int not null
         , "credits"           int not null
+        , "currentValue"      int
         , "comment"           text
         , "created"           timestamp without time zone NOT NULL DEFAULT now()
         , "updated"           timestamp without time zone NOT NULL DEFAULT now()
@@ -524,7 +525,6 @@
 
     CREATE TABLE "app" (
           "id"                serial
-        , "id_tenant"         int not null
         , "id_company"        int not null
         , "id_rateLimit"      int
         , "identifier"        varchar (100) NOT NULL
@@ -537,11 +537,6 @@
         , "deleted"           timestamp without time zone
         , CONSTRAINT "app_pk" 
             PRIMARY KEY ("id")
-        , CONSTRAINT "app_fk_tenant_id" 
-            FOREIGN KEY ("id_tenant")
-            REFERENCES "tenant" ("id")
-            ON UPDATE CASCADE
-            ON DELETE RESTRICT
         , CONSTRAINT "app_fk_company_id" 
             FOREIGN KEY ("id_company")
             REFERENCES "company" ("id")

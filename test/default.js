@@ -217,8 +217,7 @@
                 }).save();
             }).then((company) => {
                 return new db.app({
-                      tenant: appTenant
-                    , company: company
+                      company: company
                     , identifier: 'api-client'
                     , name: 'api tester'
                     , contactEmail: 'anna@joinbox.com'
@@ -378,6 +377,22 @@
         });
 
 
+
+
+        it('should return the correct rate limit for an app token', function(done) {
+            permissions.getPermission('appToken').then(function(permission) {
+                return permission.getRateLimitInfo().then((info) => {
+                    assert.deepEqual(info, {"left":5000,"interval":60,"capacity":5000});
+
+                    return permission.payRateLimit(2500).then((newInfo) => {
+                        assert(newInfo.left >= 2500);
+                        done();
+                    });                    
+                });
+            }).catch(done);
+        });
+
+
         it('should remove expired tokens from the cache', function(done) {
             this.timeout(10000);
 
@@ -397,22 +412,6 @@
             permissions.getPermission('appToken').then(function(permission) {
                 assert.deepEqual(permission.getInfo(), {"permissions":{},"capabilities":{"appIsAllowedTo":{"roles":["app-role"]}},"roles":[{"name":"app-role","permissions":{},"capabilities":{"appIsAllowedTo":true},"restrictionIds":[]}]});
                 done();
-            }).catch(done);
-        });
-
-
-
-
-        it('should return the correct rate limit for an app token', function(done) {
-            permissions.getPermission('appToken').then(function(permission) {
-                return permission.getRateLimitInfo().then((info) => {
-                    assert.deepEqual(info, {"left":5000,"interval":60,"capacity":5000});
-
-                    return permission.payRateLimit(2500).then((newInfo) => {
-                        assert(newInfo.left >= 2500);
-                        done();
-                    });                    
-                });
             }).catch(done);
         });
     });
