@@ -76,7 +76,7 @@
             let db = orm[databaseName];
 
             let exec = function(query) {
-                db.executeQuery(`set search_path to ${databaseName}; ${query}`).then(() => {
+                db.executeQuery(`${query}`).then(() => {
                     if (sqlStatments.length) exec(sqlStatments.shift());
                     else done();
                 }).catch(done);
