@@ -414,5 +414,13 @@
                 done();
             }).catch(done);
         });
+
+
+        it('should return the correct identitiy info for an app token', function(done) {
+            permissions.getPermission('appToken').then(function(permission) {
+                assert(permission.getIdentity());
+                done();
+            }).catch(done);
+        });
     });
 })();
