@@ -1,5 +1,7 @@
 # ee-soa-permissions
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/eventEmitter/ee-soa-permissions.svg)](https://greenkeeper.io/)
+
 description
 
 
